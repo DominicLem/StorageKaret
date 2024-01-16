@@ -41,4 +41,18 @@ public class SupplierService {
     public void deleteSupplier(Long id) {
         supplierRepository.deleteById(id);
     }
+    
+    public void updateSupplierPoints(Long supplierId, double pointsToAdd) {
+        // Logic to update supplier points goes here
+        // Retrieve the supplier entity
+        SupplierEntity supplier = supplierRepository.findById(supplierId).orElseThrow(() -> new SupplierNotFoundException(supplierId));
+    
+        // Update the supplier's points
+        double newPoints = supplier.getPoints() + pointsToAdd;
+        supplier.setPoints(newPoints);
+    
+        // Save the updated supplier
+        supplierRepository.save(supplier);
+    }
 }
+    

@@ -21,7 +21,7 @@ public class SupplierEntity {
     private String address;
 
     @Column(name = "points")
-    private Integer points;
+    private Double points;
 
     public Long getId() {
         return id;
@@ -47,12 +47,12 @@ public class SupplierEntity {
         this.address = address;
     }
 
-    public Integer getPoints() {
+    public Double getPoints() {
         return points;
     }
 
-    public void setPoints(Integer points) {
-        this.points = points;
+    public void setPoints(double newPoints) {
+        this.points =  newPoints;
     }
 }
 
