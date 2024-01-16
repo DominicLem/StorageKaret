@@ -25,20 +25,27 @@ public class PurchaseService {
         this.supplierService = supplierService;
     }
 
-    // public PurchaseEntity createTransaction(PurchaseEntity transaction, List<PurchaseDetailEntity> details) {
-    //     try {
-    //         transaction.setTotalTransaction(calculateTotalTransaction(details));
-    //         transaction = purchaseTransactionRepository.save(transaction);
-    //         details.forEach(detail -> {
-    //             detail.setPurchaseTransaction(transaction);
-    //             purchaseDetailRepository.save(detail);
-    //             addSupplierPoints(detail);
-    //         });
-    //         return transaction;
-    //     } catch (Exception e) {
-    //         throw new PurchaseTransactionException("Failed to create transaction", e);
-    //     }
-    // }
+    public PurchaseEntity createTransaction(PurchaseEntity transaction, List<PurchaseDetailEntity> details) {
+        try {
+            transaction.setTotalTransaction(calculateTotalTransaction(details));
+    
+            // 3. Save the transaction
+            PurchaseEntity savedTransaction = purchaseTransactionRepository.save(transaction);
+    
+            // 4. Save purchase details and calculate supplier points
+            for (PurchaseDetailEntity detail : details) {
+                detail.setPurchaseTransaction(savedTransaction);
+                purchaseDetailRepository.save(detail);
+                addSupplierPoints(detail);
+            }
+    
+            return savedTransaction;
+        } catch (Exception e) {
+            // 5. Handle exceptions and potentially rollback changes
+            throw new PurchaseTransactionException("Failed to create transaction", e);
+        }
+    }
+    
     
 
     // Read, Update, Delete (similar to previous code)
