@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 
 import com.backend.karet.entity.PurchaseDetailEntity;
 import com.backend.karet.entity.PurchaseEntity;
+import com.backend.karet.entity.SupplierEntity;
 import com.backend.karet.exception.PurchaseTransactionException;
+import com.backend.karet.exception.SupplierNotFoundException;
 import com.backend.karet.repository.PurchaseDetailRepository;
 import com.backend.karet.repository.PurchaseRepository;
 
@@ -45,8 +47,6 @@ public class PurchaseService {
             throw new PurchaseTransactionException("Failed to create transaction", e);
         }
     }
-    
-    
 
     // Read, Update, Delete (similar to previous code)
 
@@ -70,6 +70,26 @@ public class PurchaseService {
         }
         supplierService.updateSupplierPoints(detail.getPurchaseTransaction().getSupplier().getId(),
                                               detail.getWeight() * points);
+    }
+    public List<PurchaseEntity> getAllPurchase() {
+        return purchaseTransactionRepository.findAll();
+    }
+
+    public PurchaseEntity getPurchaseById(Long id) {
+        // return supplierRepository.findById(id).orElseThrow(() -> new SupplierNotFoundException(id));
+        return purchaseTransactionRepository.findById(id).orElseThrow(() -> new PurchaseTransactionException(id));      
+    }
+
+    public PurchaseEntity updatePurchase(Long id, PurchaseEntity purchaseEntity) {
+        PurchaseEntity purchase = getPurchaseById(id);
+        purchase.setSupplier(purchaseEntity.getSupplier());
+        purchase.setTotalTransaction(purchaseEntity.getTotalTransaction());
+        purchase.setTransactionDate(purchaseEntity.getTransactionDate());
+        return purchaseTransactionRepository.save(purchase);
+    }
+
+    public void deletePurchase(Long id) {
+        purchaseTransactionRepository.deleteById(id);
     }
 }
 
